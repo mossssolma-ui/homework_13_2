@@ -1,28 +1,26 @@
 import pytest
-from src.bank_operations import process_bank_search, process_bank_operations
+
+from src.bank_operations import process_bank_operations, process_bank_search
 
 
 # функция process_bank_search
 def test_process_bank_search_empty_search(sample_transactions):
     """Пустая строка возвращает копию исходного списка"""
-    result = process_bank_search(sample_transactions, '')
+    result = process_bank_search(sample_transactions, "")
     assert result == sample_transactions
     assert result is not sample_transactions
 
 
 def test_process_bank_search_ignore_case(sample_transactions):
     """Поиск не чувствителен к регистру"""
-    result = process_bank_search(sample_transactions, 'ОТКРЫТИЕ ВКЛАДА')
+    result = process_bank_search(sample_transactions, "ОТКРЫТИЕ ВКЛАДА")
     assert len(result) == 1
-    assert result[0]['id'] == '1'
+    assert result[0]["id"] == "1"
 
 
 def test_process_bank_search_no_description_key():
     """Транзакция без ключа 'description' не вызывает ошибку и игнорируется."""
-    data = [
-        {"id": "1", "amount": 100},  # нет 'description'
-        {"id": "2", "description": "Открытие", "amount": 1200}
-    ]
+    data = [{"id": "1", "amount": 100}, {"id": "2", "description": "Открытие", "amount": 1200}]  # нет 'description'
     result = process_bank_search(data, "открытие")
     assert len(result) == 1
     assert result[0]["id"] == "2"
@@ -30,10 +28,7 @@ def test_process_bank_search_no_description_key():
 
 def test_process_bank_search_description_is_none():
     """Транзакция с description = None игнорируется."""
-    data = [
-        {"description": None},
-        {"description": "Перевод"}
-    ]
+    data = [{"description": None}, {"description": "Перевод"}]
     result = process_bank_search(data, "перевод")
     assert len(result) == 1
     assert result[0]["description"] == "Перевод"
@@ -60,23 +55,23 @@ def test_process_bank_search_empty_data():
 def test_process_bank_operations():
     """Тест на подсчет категорий"""
     data = [
-        {'description': "Перевод с карты на карту"},
-        {'description': "Открытие счета"},
-        {'description': "Открытие счета"},
-        {'description': "Открытие счета"},
-        {'description': "Перевод организации"},
-        {'description': "Перевод организации"},
+        {"description": "Перевод с карты на карту"},
+        {"description": "Открытие счета"},
+        {"description": "Открытие счета"},
+        {"description": "Открытие счета"},
+        {"description": "Перевод организации"},
+        {"description": "Перевод организации"},
     ]
     categories = ["Перевод с карты на карту", "Открытие счета", "Перевод организации"]
     result = process_bank_operations(data, categories)
-    assert result == {'Открытие счета': 3, 'Перевод организации': 2, 'Перевод с карты на карту': 1}
+    assert result == {"Открытие счета": 3, "Перевод организации": 2, "Перевод с карты на карту": 1}
 
 
 def test_process_bank_operations_empty_categories():
     """Если список категорий пустой, функция возвращает пустой словарь"""
     data = [
-        {'description': 'Перевод'},
-        {'description': 'Открытие'},
+        {"description": "Перевод"},
+        {"description": "Открытие"},
     ]
     categories = []
     result = process_bank_operations(data, categories)
