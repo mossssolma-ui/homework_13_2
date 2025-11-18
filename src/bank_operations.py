@@ -14,7 +14,7 @@ def process_bank_search(data: list[dict], search: str) -> list[dict]:
 
     filtered_data = []
     for transact in data:
-        description = transact.get('description')
+        description = transact.get("description")
         if not description:
             continue
         if pattern.search(str(description)):
@@ -31,11 +31,7 @@ def process_bank_operations(data: list[dict], categories: list) -> dict:
     if not categories:
         return {}
 
-    descriptions = [
-        d['description']
-        for d in data
-        if d.get('description') in categories
-    ]
+    descriptions = [d["description"] for d in data if d.get("description") in categories]
 
     counted = dict(Counter(descriptions))
     result = {category: counted.get(category, 0) for category in categories}
