@@ -7,8 +7,11 @@ def mask_account_card(account_card: str) -> str:
     принимает один аргумент — строку, содержащую тип и номер карты или счета. \
     И возвращает строку с замаскированным номером.
     """
-    choice_acc = account_card.strip().split()
     result = "Данные отсутствуют"
+    if not isinstance(account_card, str) or not account_card.strip():
+        return result
+
+    choice_acc = account_card.strip().split()
     if len(choice_acc) < 2:
         return result
 
@@ -23,16 +26,8 @@ def mask_account_card(account_card: str) -> str:
         return result
 
     card_name = " ".join(choice_acc[:-1])
-    if card_name in [
-        "Visa",
-        "Maestro",
-        "MasterCard",
-        "Visa Classic",
-        "Visa Platinum",
-        "Visa Gold",
-    ]:
-        result = f"{card_name} {get_mask_card_number(number)}"
-        return result
+    result = f"{card_name} {get_mask_card_number(number)}"
+
     return result
 
 
