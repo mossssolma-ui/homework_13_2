@@ -59,10 +59,13 @@ def format_transactions(trans: dict) -> str:
 
     direction = f"{from_mask} -> {to_mask}" if from_mask else to_mask
 
-    op_amount = trans.get("operationAmount", {})
-    amount = op_amount.get("amount", 0)
-    currency = op_amount.get("currency", {})
-    currency_name = currency.get("name", "руб.")
+    if "operationAmount" in trans:
+        op_amount = trans["operationAmount"]
+        amount = op_amount.get("amount", "0")
+        currency_name = op_amount.get("currency", {}).get("name", "руб.")
+    else:
+        amount = str(trans.get("amount", "0"))
+        currency_name = trans.get("currency_name", "руб.")
 
     result = f"{date_str} {description}\n{direction}\n" f"Сумма: {amount} {currency_name}"
 
